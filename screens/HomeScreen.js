@@ -1,3 +1,5 @@
+import { Feather, MaterialIcons } from "@expo/vector-icons";
+import * as Location from "expo-location";
 import React, { useEffect, useState } from "react";
 import {
   Alert,
@@ -9,10 +11,8 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import * as Location from "expo-location";
-import { MaterialIcons } from "@expo/vector-icons";
-import { Feather } from "@expo/vector-icons";
-import { StatusBar } from "expo-status-bar";
+import Carousel from "../components/Carousel";
+import Services from "../components/Services";
 
 const HomeScreen = () => {
   const [displayCurrentAddress, setdisplayCurrentAddress] = useState(
@@ -82,7 +82,7 @@ const HomeScreen = () => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ backgroundColor: "#F0F0F0", flex: 1 }}>
       {/* Location and Profile */}
       <View style={styles.container}>
         <MaterialIcons name="location-on" size={24} color="#fd5c63" />
@@ -106,6 +106,12 @@ const HomeScreen = () => {
         <TextInput placeholder="Search for items or More" />
         <Feather name="search" size={24} color="#fd5c63" />
       </View>
+
+      {/* Image Carousel */}
+      <Carousel />
+
+      {/* Service Component */}
+      <Services />
     </SafeAreaView>
   );
 };
