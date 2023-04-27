@@ -1,6 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Alert, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import * as Location from "expo-location";
+import { MaterialIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
+import { StatusBar } from "expo-status-bar";
 
 const HomeScreen = () => {
   const [displayCurrentAddress, setdisplayCurrentAddress] = useState(
@@ -71,14 +83,62 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView>
-      <View>
-        <Text>{displayCurrentAddress}</Text>
+      {/* Location and Profile */}
+      <View style={styles.container}>
+        <MaterialIcons name="location-on" size={24} color="#fd5c63" />
+        <View>
+          <Text style={styles.label}>Home</Text>
+          <Text>{displayCurrentAddress}</Text>
+        </View>
+
+        <Pressable style={styles.btnImage}>
+          <Image
+            style={styles.image}
+            source={{
+              uri: "https://lh3.googleusercontent.com/ogw/AOLn63EP1jh2_EfySNDXaRPN4e7eW81r_uNGQeQY4KER8w=s32-c-mo",
+            }}
+          />
+        </Pressable>
       </View>
-      <Text>HomeScreen</Text>
+
+      {/* Search Bar */}
+      <View style={styles.inputSearchBar}>
+        <TextInput placeholder="Search for items or More" />
+        <Feather name="search" size={24} color="#fd5c63" />
+      </View>
     </SafeAreaView>
   );
 };
 
 export default HomeScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 10,
+  },
+  label: {
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  btnImage: {
+    marginLeft: "auto",
+    marginRight: 7,
+  },
+  image: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  inputSearchBar: {
+    padding: 10,
+    margin: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderWidth: 0.8,
+    borderColor: "#C0C0C0",
+    borderRadius: 7,
+  },
+});
