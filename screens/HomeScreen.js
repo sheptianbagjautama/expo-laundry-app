@@ -11,12 +11,14 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import Carousel from "../components/Carousel";
-import Services from "../components/Services";
 import DressItem from "../components/DressItem";
+import Services from "../components/Services";
+import { useSelector } from "react-redux";
 
 const HomeScreen = () => {
+  const cart = useSelector((state) => state.cart.cart);
+  console.log(cart);
   const [displayCurrentAddress, setdisplayCurrentAddress] = useState(
     "we are loading your location"
   );

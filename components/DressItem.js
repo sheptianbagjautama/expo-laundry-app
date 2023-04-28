@@ -2,7 +2,6 @@ import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 
 const DressItem = ({ item }) => {
-  console.log("item => ", item);
   return (
     <View>
       <Pressable style={styles.btnItem}>
