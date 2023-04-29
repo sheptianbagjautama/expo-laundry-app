@@ -16,6 +16,7 @@ import DressItem from "../components/DressItem";
 import Services from "../components/Services";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../redux/ProductReducer";
+import { useNavigation } from "@react-navigation/native";
 
 const HomeScreen = () => {
   const cart = useSelector((state) => state.cart.cart);
@@ -23,6 +24,8 @@ const HomeScreen = () => {
     .map((item) => item.quantity * item.price)
     .reduce((curr, prev) => curr + prev, 0);
   console.log("cart ==> ", JSON.stringify(cart, undefined, 2));
+
+  const navigation = useNavigation();
 
   const [displayCurrentAddress, setdisplayCurrentAddress] = useState(
     "we are loading your location"
@@ -205,7 +208,7 @@ const HomeScreen = () => {
             <Text style={styles.sublabelItems}>extra charges might apply</Text>
           </View>
 
-          <Pressable>
+          <Pressable onPress={() => navigation.navigate("PickUp")}>
             <Text style={styles.labelItems}>Proceed to pickup</Text>
           </Pressable>
         </Pressable>
