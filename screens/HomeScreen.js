@@ -19,7 +19,7 @@ import { getProducts } from "../redux/ProductReducer";
 
 const HomeScreen = () => {
   const cart = useSelector((state) => state.cart.cart);
-  console.log(cart);
+  console.log("cart ==> ", JSON.stringify(cart, undefined, 2));
 
   const [displayCurrentAddress, setdisplayCurrentAddress] = useState(
     "we are loading your location"

@@ -1,7 +1,21 @@
 import React from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addToCart,
+  decrementQuantity,
+  incrementQuantity,
+} from "../redux/CartReducer";
+import { decrementQty, incrementQty } from "../redux/ProductReducer";
 
 const DressItem = ({ item }) => {
+  const dispatch = useDispatch();
+  const cart = useSelector((state) => state.cart.cart);
+
+  const addItemToCart = () => {
+    dispatch(addToCart(item)); //cart
+    dispatch(incrementQty(item)); //product
+  };
   return (
     <View>
       <Pressable style={styles.btnItem}>
@@ -14,9 +28,37 @@ const DressItem = ({ item }) => {
           <Text style={styles.labelPrice}>${item.price}</Text>
         </View>
 
-        <Pressable style={styles.btnAdd}>
-          <Text style={styles.labelAdd}>Add</Text>
-        </Pressable>
+        {cart.some((c) => c.id === item.id) ? (
+          <Pressable style={styles.btnCartContainer}>
+            <Pressable
+              onPress={() => {
+                dispatch(decrementQuantity(item)); //cart
+                dispatch(decrementQty(item)); //product
+              }}
+              style={styles.btnCart}
+            >
+              <Text style={styles.labelCart}>-</Text>
+            </Pressable>
+
+            <Pressable>
+              <Text style={styles.labelQuantity}>{item.quantity}</Text>
+            </Pressable>
+
+            <Pressable
+              onPress={() => {
+                dispatch(incrementQuantity(item)); //cart
+                dispatch(incrementQty(item)); //product
+              }}
+              style={styles.btnCart}
+            >
+              <Text style={styles.labelCart}>+</Text>
+            </Pressable>
+          </Pressable>
+        ) : (
+          <Pressable onPress={addItemToCart} style={styles.btnAdd}>
+            <Text style={styles.labelAdd}>Add</Text>
+          </Pressable>
+        )}
       </Pressable>
     </View>
   );
@@ -48,6 +90,33 @@ const styles = StyleSheet.create({
     width: 60,
     color: "gray",
     fontSize: 15,
+  },
+  btnCartContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  btnCart: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    borderColor: "#BEBEBE",
+    backgroundColor: "#E0E0E0",
+    justifyContent: "center",
+    alignContent: "center",
+  },
+  labelCart: {
+    fontSize: 20,
+    color: "#088F8F",
+    paddingHorizontal: 6,
+    fontWeight: "600",
+    textAlign: "center",
+  },
+  labelQuantity: {
+    fontSize: 19,
+    color: "#088F8F",
+    paddingHorizontal: 8,
+    fontWeight: "600",
   },
   btnAdd: {
     width: 80,
