@@ -19,6 +19,9 @@ import { getProducts } from "../redux/ProductReducer";
 
 const HomeScreen = () => {
   const cart = useSelector((state) => state.cart.cart);
+  const total = cart
+    .map((item) => item.quantity * item.price)
+    .reduce((curr, prev) => curr + prev, 0);
   console.log("cart ==> ", JSON.stringify(cart, undefined, 2));
 
   const [displayCurrentAddress, setdisplayCurrentAddress] = useState(
@@ -153,42 +156,61 @@ const HomeScreen = () => {
   ];
 
   return (
-    <ScrollView style={{ backgroundColor: "#F0F0F0", flex: 1, marginTop: 50 }}>
-      {/* Location and Profile */}
-      <View style={styles.container}>
-        <MaterialIcons name="location-on" size={24} color="#fd5c63" />
-        <View>
-          <Text style={styles.label}>Home</Text>
-          <Text>{displayCurrentAddress}</Text>
+    <>
+      <ScrollView
+        style={{ backgroundColor: "#F0F0F0", flex: 1, marginTop: 50 }}
+      >
+        {/* Location and Profile */}
+        <View style={styles.container}>
+          <MaterialIcons name="location-on" size={24} color="#fd5c63" />
+          <View>
+            <Text style={styles.label}>Home</Text>
+            <Text>{displayCurrentAddress}</Text>
+          </View>
+
+          <Pressable style={styles.btnImage}>
+            <Image
+              style={styles.image}
+              source={{
+                uri: "https://lh3.googleusercontent.com/ogw/AOLn63EP1jh2_EfySNDXaRPN4e7eW81r_uNGQeQY4KER8w=s32-c-mo",
+              }}
+            />
+          </Pressable>
         </View>
 
-        <Pressable style={styles.btnImage}>
-          <Image
-            style={styles.image}
-            source={{
-              uri: "https://lh3.googleusercontent.com/ogw/AOLn63EP1jh2_EfySNDXaRPN4e7eW81r_uNGQeQY4KER8w=s32-c-mo",
-            }}
-          />
+        {/* Search Bar */}
+        <View style={styles.inputSearchBar}>
+          <TextInput placeholder="Search for items or More" />
+          <Feather name="search" size={24} color="#fd5c63" />
+        </View>
+
+        {/* Image Carousel */}
+        <Carousel />
+
+        {/* Service Component */}
+        <Services />
+
+        {/* Render All The Products */}
+        {product.map((item, index) => (
+          <DressItem item={item} key={index} />
+        ))}
+      </ScrollView>
+
+      {total === 0 ? null : (
+        <Pressable style={styles.btnSummary}>
+          <View>
+            <Text style={styles.labelItems}>
+              {cart.length} items | ${total}
+            </Text>
+            <Text style={styles.sublabelItems}>extra charges might apply</Text>
+          </View>
+
+          <Pressable>
+            <Text style={styles.labelItems}>Proceed to pickup</Text>
+          </Pressable>
         </Pressable>
-      </View>
-
-      {/* Search Bar */}
-      <View style={styles.inputSearchBar}>
-        <TextInput placeholder="Search for items or More" />
-        <Feather name="search" size={24} color="#fd5c63" />
-      </View>
-
-      {/* Image Carousel */}
-      <Carousel />
-
-      {/* Service Component */}
-      <Services />
-
-      {/* Render All The Products */}
-      {product.map((item, index) => (
-        <DressItem item={item} key={index} />
-      ))}
-    </ScrollView>
+      )}
+    </>
   );
 };
 
@@ -222,5 +244,26 @@ const styles = StyleSheet.create({
     borderWidth: 0.8,
     borderColor: "#C0C0C0",
     borderRadius: 7,
+  },
+  btnSummary: {
+    backgroundColor: "#088F8F",
+    padding: 10,
+    // marginBottom: 20,
+    margin: 15,
+    borderRadius: 7,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  labelItems: {
+    fontSize: 17,
+    fontWeight: "600",
+    color: "#FFFFFF",
+  },
+  sublabelItems: {
+    fontSize: 14,
+    fontWeight: "400",
+    color: "white",
+    marginVertical: 6,
   },
 });
