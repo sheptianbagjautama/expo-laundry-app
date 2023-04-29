@@ -14,11 +14,13 @@ import {
 import Carousel from "../components/Carousel";
 import DressItem from "../components/DressItem";
 import Services from "../components/Services";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { getProducts } from "../redux/ProductReducer";
 
 const HomeScreen = () => {
   const cart = useSelector((state) => state.cart.cart);
   console.log(cart);
+
   const [displayCurrentAddress, setdisplayCurrentAddress] = useState(
     "we are loading your location"
   );
@@ -85,6 +87,19 @@ const HomeScreen = () => {
     }
   };
 
+  const product = useSelector((state) => state.product.product);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (product.length > 0) return;
+
+    const fetchProducts = () => {
+      services.map((service) => dispatch(getProducts(service)));
+    };
+
+    fetchProducts();
+  }, []);
+
+  // console.log(JSON.stringify(product, undefined, 2));
   const services = [
     {
       id: "0",
@@ -170,7 +185,7 @@ const HomeScreen = () => {
       <Services />
 
       {/* Render All The Products */}
-      {services.map((item, index) => (
+      {product.map((item, index) => (
         <DressItem item={item} key={index} />
       ))}
     </ScrollView>
