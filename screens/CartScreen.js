@@ -69,173 +69,55 @@ const CartScreen = () => {
             </Pressable>
 
             <View style={styles.containerBillingDetails}>
-              <Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 30 }}>
-                Billing Details
-              </Text>
-              <View
-                style={{
-                  backgroundColor: "white",
-                  borderRadius: 7,
-                  padding: 10,
-                  marginTop: 15,
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Text
-                    style={{ fontSize: 18, fontWeight: "400", color: "gray" }}
-                  >
-                    Item Total
-                  </Text>
-                  <Text style={{ fontSize: 18, fontWeight: "400" }}>
-                    ${total}
-                  </Text>
+              <Text style={styles.labelTitle}>Billing Details</Text>
+              <View style={styles.subContainerBillingDetails}>
+                <View style={styles.subContainerRow()}>
+                  <Text style={styles.labelName}>Item Total</Text>
+                  <Text style={styles.labelValue()}>${total}</Text>
                 </View>
 
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginVertical: 8,
-                  }}
-                >
-                  <Text
-                    style={{ fontSize: 18, fontWeight: "400", color: "gray" }}
-                  >
-                    Delivery Free | 1.2KM
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      fontWeight: "400",
-                      color: "#088F8F",
-                    }}
-                  >
-                    FREE
-                  </Text>
+                <View style={styles.subContainerRow(8)}>
+                  <Text style={styles.labelName}>Delivery Free | 1.2KM</Text>
+                  <Text style={styles.labelValue("#088F8F")}>FREE</Text>
                 </View>
 
-                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                  <Text
-                    style={{ fontSize: 18, fontWeight: "500", color: "gray" }}
-                  >
+                <View style={styles.labelAlert}>
+                  <Text style={styles.labelName}>
                     Free Delivery on Your order
                   </Text>
                 </View>
 
-                <View
-                  style={{
-                    borderColor: "gray",
-                    height: 1,
-                    borderWidth: 0.5,
-                    marginTop: 10,
-                  }}
-                />
+                <View style={styles.line} />
 
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginVertical: 10,
-                  }}
-                >
-                  <Text
-                    style={{ fontSize: 18, fontWeight: "500", color: "gray" }}
-                  >
-                    Selected Date
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      fontWeight: "400",
-                      color: "#088F8F",
-                    }}
-                  >
+                <View style={styles.subContainerRow(10)}>
+                  <Text style={styles.labelName}>Selected Date</Text>
+                  <Text style={styles.labelValue("#088F8F")}>
                     {/* {route.params.pickUpDate} */}
                     Pikupdate
                   </Text>
                 </View>
 
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <Text
-                    style={{ fontSize: 18, fontWeight: "500", color: "gray" }}
-                  >
-                    No Of Days
-                  </Text>
+                <View style={styles.subContainerRow()}>
+                  <Text style={styles.labelName}>No Of Days</Text>
 
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      fontWeight: "400",
-                      color: "#088F8F",
-                    }}
-                  >
+                  <Text style={styles.labelValue("#088F8F")}>
                     {route.params.no_Of_days}
                   </Text>
                 </View>
 
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginVertical: 10,
-                  }}
-                >
-                  <Text
-                    style={{ fontSize: 18, fontWeight: "500", color: "gray" }}
-                  >
-                    Selected Pick Up Time
-                  </Text>
+                <View style={styles.subContainerRow(10)}>
+                  <Text style={styles.labelName}>Selected Pick Up Time</Text>
 
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      fontWeight: "400",
-                      color: "#088F8F",
-                    }}
-                  >
+                  <Text style={styles.labelValue("#088F8F")}>
                     {route.params.selectedTime}
                   </Text>
                 </View>
 
-                <View
-                  style={{
-                    borderColor: "gray",
-                    height: 1,
-                    borderWidth: 0.5,
+                <View style={styles.line} />
 
-                    marginTop: 10,
-                  }}
-                />
-
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    marginVertical: 8,
-                  }}
-                >
-                  <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                    To Pay
-                  </Text>
-                  <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                    {total + 95}
-                  </Text>
+                <View style={styles.subContainerRow(8)}>
+                  <Text style={styles.labelSummary}>To Pay</Text>
+                  <Text style={styles.labelSummary}>${total}</Text>
                 </View>
               </View>
             </View>
@@ -323,7 +205,48 @@ const styles = StyleSheet.create({
   containerBillingDetails: {
     marginHorizontal: 10,
   },
+  labelTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginTop: 30,
+  },
+  subContainerBillingDetails: {
+    backgroundColor: "white",
+    borderRadius: 7,
+    padding: 10,
+    marginTop: 15,
+  },
+  subContainerRow: (marginVertical) => ({
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginVertical: marginVertical ? marginVertical : 0,
+  }),
+  line: {
+    borderColor: "gray",
+    height: 1,
+    borderWidth: 0.5,
 
+    marginTop: 10,
+  },
+  labelName: {
+    fontSize: 18,
+    fontWeight: "400",
+    color: "gray",
+  },
+  labelValue: (color) => ({
+    fontSize: 18,
+    fontWeight: "400",
+    color: color ? color : "#000000",
+  }),
+  labelAlert: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  labelSummary: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
   //POP UP SUMMARY
   btnSummary: {
     marginTop: "auto",

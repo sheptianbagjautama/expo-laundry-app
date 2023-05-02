@@ -89,7 +89,7 @@ const PickUpScreen = () => {
     }
     if (selectedDate && selectedTime && delivery) {
       navigation.replace("Cart", {
-        pickUpDate: selectedDate,
+        // pickUpDate: selectedDate,
         selectedTime: selectedTime,
         no_Of_days: delivery,
       });
