@@ -88,7 +88,11 @@ const PickUpScreen = () => {
       );
     }
     if (selectedDate && selectedTime && delivery) {
-      navigation.replace("Cart");
+      navigation.replace("Cart", {
+        pickUpDate: selectedDate,
+        selectedTime: selectedTime,
+        no_Of_days: delivery,
+      });
     }
   };
   return (
