@@ -10,10 +10,12 @@ import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigation = useNavigation();
 
   return (
     <SafeAreaView style={styles.containerSafeArea}>
@@ -55,7 +57,7 @@ const LoginScreen = () => {
             <Text style={styles.labelLogin}>Login</Text>
           </Pressable>
 
-          <Pressable>
+          <Pressable onPress={() => navigation.navigate("Register")}>
             <Text style={styles.labelRegister}>
               Don't have a account ? Sign Up
             </Text>
