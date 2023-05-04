@@ -17,6 +17,8 @@ import Services from "../components/Services";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../redux/ProductReducer";
 import { useNavigation } from "@react-navigation/native";
+import { collection, getDoc, getDocs } from "firebase/firestore";
+import { db } from "../firebase";
 
 const HomeScreen = () => {
   const cart = useSelector((state) => state.cart.cart);
@@ -31,6 +33,7 @@ const HomeScreen = () => {
     "we are loading your location"
   );
   const [locationServicesEnabled, setlocationServicesEnabled] = useState(false);
+  const [items, setItems] = useState([]);
 
   useEffect(() => {
     checkIfLocationEnabled();
@@ -98,8 +101,14 @@ const HomeScreen = () => {
   useEffect(() => {
     if (product.length > 0) return;
 
-    const fetchProducts = () => {
-      services.map((service) => dispatch(getProducts(service)));
+    const fetchProducts = async () => {
+      const colRef = collection(db, "types");
+      const docsSnap = await getDocs(colRef);
+      docsSnap.forEach((doc) => {
+        console.log(JSON.stringify("doc data ==> ", doc.data(), undefined, 2));
+        items.push(doc.data());
+      });
+      items?.map((service) => dispatch(getProducts(service)));
     };
 
     fetchProducts();
