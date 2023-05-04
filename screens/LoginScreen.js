@@ -14,34 +14,59 @@ import { useNavigation } from "@react-navigation/native";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { ActivityIndicator } from "react-native";
+import { TouchableOpacity } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginScreen = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("sheptianbagjautama@gmail.com");
+  const [password, setPassword] = useState("admin123");
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
-    setLoading(true);
-    //When user after register it will navigate to home screen
-    const unsubscribe = auth.onAuthStateChanged((authUser) => {
-      console.log("subscribe login => ", authUser);
-      if (!authUser) {
-        setLoading(false);
-      }
-      if (authUser) {
-        navigation.navigate("Home");
-      }
-    });
+    checkLogin();
+    // //When user after register it will navigate to home screen
+    // const unsubscribe = auth.onAuthStateChanged((authUser) => {
+    //   console.log("subscribe login => ", authUser);
+    //   if (!authUser) {
+    //     setLoading(false);
+    //   }
+    //   if (authUser) {
+    //     navigation.navigate("Home");
+    //   }
+    // });
 
-    return unsubscribe;
+    // return unsubscribe;
   }, []);
 
-  const login = () => {
+  const checkLogin = async () => {
+    try {
+      setLoading(true);
+      const value = await AsyncStorage.getItem("token");
+      console.log("token => ", value);
+      if (value == null) {
+        setLoading(false);
+      }
+      if (value !== null) {
+        navigation.navigate("Home");
+      }
+    } catch (e) {
+      console.log("error", e);
+      setLoading(false);
+      // error reading value
+    }
+  };
+
+  const login = async () => {
     signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
       console.log("user credential", userCredential);
       const user = userCredential.user;
-      console.log("user details", user);
+      console.log("user details", JSON.stringify(user, undefined, 4));
+
+      AsyncStorage.setItem("email", userCredential._tokenResponse.email);
+      AsyncStorage.setItem("token", userCredential._tokenResponse.idToken);
+
+      navigation.navigate("Home");
     });
   };
 
@@ -98,11 +123,11 @@ const LoginScreen = () => {
               <Text style={styles.labelLogin}>Login</Text>
             </Pressable>
 
-            <Pressable onPress={() => navigation.navigate("Register")}>
+            <TouchableOpacity onPress={() => navigation.navigate("Register")}>
               <Text style={styles.labelRegister}>
                 Don't have a account ? Sign Up
               </Text>
-            </Pressable>
+            </TouchableOpacity>
           </View>
         </KeyboardAvoidingView>
       )}

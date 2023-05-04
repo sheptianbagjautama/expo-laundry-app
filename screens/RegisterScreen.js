@@ -11,6 +11,7 @@ import { Alert } from "react-native";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../firebase";
 import { doc, setDoc } from "firebase/firestore";
+import { showMessage, hideMessage } from "react-native-flash-message";
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState("");
@@ -43,6 +44,11 @@ const RegisterScreen = () => {
         setDoc(doc(db, "users", `${myUserUid}`), {
           email: userEmail,
           phone: phone,
+        });
+
+        showMessage({
+          message: "Succesfully register !",
+          type: "success",
         });
       }
     );
