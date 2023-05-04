@@ -6,64 +6,106 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
+import { ActivityIndicator } from "react-native";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
+
+  useEffect(() => {
+    setLoading(true);
+    //When user after register it will navigate to home screen
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+      console.log("subscribe login => ", authUser);
+      if (!authUser) {
+        setLoading(false);
+      }
+      if (authUser) {
+        navigation.navigate("Home");
+      }
+    });
+
+    return unsubscribe;
+  }, []);
+
+  const login = () => {
+    signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
+      console.log("user credential", userCredential);
+      const user = userCredential.user;
+      console.log("user details", user);
+    });
+  };
 
   return (
     <SafeAreaView style={styles.containerSafeArea}>
-      <KeyboardAvoidingView>
-        <View style={styles.container}>
-          <Text style={styles.labelTitle}>Sign In</Text>
-          <Text style={styles.labelSubtitle}>Sign In to your account</Text>
+      {loading ? (
+        <View
+          style={{
+            alignItems: "center",
+            justifyContent: "center",
+            flexDirection: "row",
+            flex: 1,
+          }}
+        >
+          <Text style={{ marginRight: 10 }}>Loading</Text>
+          <ActivityIndicator size="large" color={"red"} />
         </View>
-
-        <View>
-          <View style={styles.containerInput}>
-            <MaterialCommunityIcons
-              name="email-outline"
-              size={24}
-              color="black"
-            />
-            <TextInput
-              placeholder="Email"
-              value={email}
-              onChangeText={(text) => setEmail(text)}
-              placeholderTextColor="black"
-              style={styles.input(email)}
-            />
+      ) : (
+        <KeyboardAvoidingView>
+          <View style={styles.container}>
+            <Text style={styles.labelTitle}>Sign In</Text>
+            <Text style={styles.labelSubtitle}>Sign In to your account</Text>
           </View>
 
-          <View style={styles.containerInput}>
-            <Ionicons name="key-outline" size={24} color="black" />
-            <TextInput
-              placeholder="Password"
-              value={password}
-              onChangeText={(text) => setPassword(text)}
-              secureTextEntry
-              placeholderTextColor="black"
-              style={styles.input(email)}
-            />
+          <View>
+            <View style={styles.containerInput}>
+              <MaterialCommunityIcons
+                name="email-outline"
+                size={24}
+                color="black"
+              />
+              <TextInput
+                placeholder="Email"
+                value={email}
+                onChangeText={(text) => setEmail(text)}
+                placeholderTextColor="black"
+                style={styles.input(email)}
+              />
+            </View>
+
+            <View style={styles.containerInput}>
+              <Ionicons name="key-outline" size={24} color="black" />
+              <TextInput
+                placeholder="Password"
+                value={password}
+                onChangeText={(text) => setPassword(text)}
+                secureTextEntry
+                placeholderTextColor="black"
+                style={styles.input(email)}
+              />
+            </View>
+
+            <Pressable onPress={login} style={styles.btnLogin}>
+              <Text style={styles.labelLogin}>Login</Text>
+            </Pressable>
+
+            <Pressable onPress={() => navigation.navigate("Register")}>
+              <Text style={styles.labelRegister}>
+                Don't have a account ? Sign Up
+              </Text>
+            </Pressable>
           </View>
-
-          <Pressable style={styles.btnLogin}>
-            <Text style={styles.labelLogin}>Login</Text>
-          </Pressable>
-
-          <Pressable onPress={() => navigation.navigate("Register")}>
-            <Text style={styles.labelRegister}>
-              Don't have a account ? Sign Up
-            </Text>
-          </Pressable>
-        </View>
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+      )}
     </SafeAreaView>
   );
 };

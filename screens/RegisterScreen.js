@@ -7,12 +7,46 @@ import { Feather } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { TextInput } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { Alert } from "react-native";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const navigation = useNavigation();
+
+  const register = () => {
+    if (email == "" || password == "" || phone == "") {
+      Alert.alert(
+        "Invalid Details",
+        "Please fill all the details",
+        [
+          {
+            text: "Cancel",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "OK", onPress: () => console.log("OK Pressed") },
+        ],
+        { cancelable: false }
+      );
+    }
+    createUserWithEmailAndPassword(auth, email, password).then(
+      (userCredential) => {
+        console.log("user credential => ", userCredential);
+        const userEmail = userCredential._tokenResponse.email;
+        const myUserUid = auth.currentUser.uid;
+
+        setDoc(doc(db, "users", `${myUserUid}`), {
+          email: userEmail,
+          phone: phone,
+        });
+      }
+    );
+  };
 
   return (
     <SafeAreaView style={styles.containerSafeArea}>
@@ -61,7 +95,7 @@ const RegisterScreen = () => {
             />
           </View>
 
-          <Pressable style={styles.btnLogin}>
+          <Pressable onPress={register} style={styles.btnLogin}>
             <Text style={styles.labelLogin}>Register</Text>
           </Pressable>
 
