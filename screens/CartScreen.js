@@ -2,9 +2,15 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Ionicons } from "@expo/vector-icons";
-import { decrementQuantity, incrementQuantity } from "../redux/CartReducer";
+import {
+  cleanCart,
+  decrementQuantity,
+  incrementQuantity,
+} from "../redux/CartReducer";
 import { decrementQty, incrementQty } from "../redux/ProductReducer";
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { auth, db } from "../firebase";
+import { doc, setDoc } from "firebase/firestore";
 
 const CartScreen = () => {
   const cart = useSelector((state) => state.cart.cart);
@@ -14,8 +20,23 @@ const CartScreen = () => {
     .reduce((curr, prev) => curr + prev, 0);
   const dispatch = useDispatch();
 
-  console.log("cart bambang ==> ", JSON.stringify(cart, undefined, 2));
-  console.log("total", total);
+  const navigation = useNavigation();
+  const userUID = auth.currentUser.uid;
+  console.log("userUId => ", userUID);
+  const placeOrder = async () => {
+    navigation.navigate("Order");
+    dispatch(cleanCart());
+    await setDoc(
+      doc(db, "users", `${userUID}`),
+      {
+        order: { ...cart },
+        pickUpDetails: route.params,
+      },
+      {
+        merge: true,
+      }
+    );
+  };
 
   return (
     <>
@@ -134,7 +155,7 @@ const CartScreen = () => {
             <Text style={styles.sublabelItems}>extra charges might apply</Text>
           </View>
 
-          <Pressable>
+          <Pressable onPress={placeOrder}>
             <Text style={styles.labelItems}>Place Order</Text>
           </Pressable>
         </Pressable>

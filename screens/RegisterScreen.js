@@ -34,24 +34,25 @@ const RegisterScreen = () => {
         ],
         { cancelable: false }
       );
+    } else {
+      createUserWithEmailAndPassword(auth, email, password).then(
+        (userCredential) => {
+          console.log("user credential => ", userCredential);
+          const userEmail = userCredential._tokenResponse.email;
+          const myUserUid = auth.currentUser.uid;
+
+          setDoc(doc(db, "users", `${myUserUid}`), {
+            email: userEmail,
+            phone: phone,
+          });
+
+          // showMessage({
+          //   message: "Succesfully register !",
+          //   type: "success",
+          // });
+        }
+      );
     }
-    createUserWithEmailAndPassword(auth, email, password).then(
-      (userCredential) => {
-        console.log("user credential => ", userCredential);
-        const userEmail = userCredential._tokenResponse.email;
-        const myUserUid = auth.currentUser.uid;
-
-        setDoc(doc(db, "users", `${myUserUid}`), {
-          email: userEmail,
-          phone: phone,
-        });
-
-        showMessage({
-          message: "Succesfully register !",
-          type: "success",
-        });
-      }
-    );
   };
 
   return (

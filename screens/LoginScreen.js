@@ -11,7 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase";
 import { ActivityIndicator } from "react-native";
 import { TouchableOpacity } from "react-native";
@@ -24,20 +24,35 @@ const LoginScreen = () => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    checkLogin();
-    // //When user after register it will navigate to home screen
-    // const unsubscribe = auth.onAuthStateChanged((authUser) => {
-    //   console.log("subscribe login => ", authUser);
-    //   if (!authUser) {
-    //     setLoading(false);
-    //   }
-    //   if (authUser) {
-    //     navigation.navigate("Home");
-    //   }
-    // });
+    // // checkLogin();
+    //When user after register it will navigate to home screen
+    const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
+      console.log("subscribe login => ", authUser);
+      if (!authUser) {
+        setLoading(false);
+      }
+      if (authUser) {
+        let user = JSON.stringify(authUser);
+        await AsyncStorage.setItem("user", user);
+        navigation.navigate("Home");
+      }
+    });
 
-    // return unsubscribe;
+    return unsubscribe;
   }, []);
+
+  const isLogin = async () => {
+    let unsubscribe;
+    const user = await AsyncStorage.getItem("user");
+    if (user) {
+      navigation.navigate("Home");
+    } else {
+      unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+        let currentUserLogin = JSON.stringify(currentUser);
+        await AsyncStorage.setItem("user", currentUserLogin);
+      });
+    }
+  };
 
   const checkLogin = async () => {
     try {
@@ -49,6 +64,16 @@ const LoginScreen = () => {
       }
       if (value !== null) {
         navigation.navigate("Home");
+        // getAuth()
+        //   .verifyIdToken(value)
+        //   .then((payload) => {
+        //     //Token is Valid
+        //     console.log("payload check token => ", payload);
+        //     navigation.navigate("Home");
+        //   })
+        //   .catch((error) => {
+        //     navigation.navigate("Login");
+        //   });
       }
     } catch (e) {
       console.log("error", e);
@@ -58,16 +83,21 @@ const LoginScreen = () => {
   };
 
   const login = async () => {
-    signInWithEmailAndPassword(auth, email, password).then((userCredential) => {
-      console.log("user credential", userCredential);
-      const user = userCredential.user;
-      console.log("user details", JSON.stringify(user, undefined, 4));
+    signInWithEmailAndPassword(auth, email, password).then(
+      async (userCredential) => {
+        console.log("user credential", userCredential);
+        const user = userCredential.user;
+        console.log("user details", JSON.stringify(user, undefined, 4));
 
-      AsyncStorage.setItem("email", userCredential._tokenResponse.email);
-      AsyncStorage.setItem("token", userCredential._tokenResponse.idToken);
+        AsyncStorage.setItem("email", userCredential._tokenResponse.email);
+        AsyncStorage.setItem("token", userCredential._tokenResponse.idToken);
 
-      navigation.navigate("Home");
-    });
+        let userCredentialLogin = JSON.stringify(userCredential);
+        await AsyncStorage.setItem("user", userCredentialLogin);
+
+        navigation.navigate("Home");
+      }
+    );
   };
 
   return (
